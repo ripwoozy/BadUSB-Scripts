@@ -6,7 +6,7 @@ This script is designed to exfiltrate WiFi Passwords to a Discord webhook. It op
 
 1. Connect the BadUSB device to the target machine.
 2. Run the script on the target machine.
-3. PC information will be sent to the specified Discord webhook.
+3. WiFi Passwords will be sent to the specified Discord webhook.
 
 ## Requirements
 
