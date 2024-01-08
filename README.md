@@ -1,5 +1,5 @@
 # BadUSB-Scripts
-[![Banner](assets/Banner.jpg)](https://github.com/3daWoozy/BadUSB-Scripts)
+[![Banner](Assets/Banner.jpg)](https://github.com/3daWoozy/BadUSB-Scripts)
 
 Welcome to BadUSB-Scripts, a collection of scripts for use with FlipperZero. 
 
