@@ -71,3 +71,5 @@ DELAY 500
 REM Exit PowerShell
 STRING exit
 ENTER
+
+REM END: Ducky script

