@@ -1,7 +1,6 @@
 # Exfill WiFi Passwords to Discord Webhook
 
-This script is designed to exfiltrate WiFi Passwords to a Discord webhook. It opens PowerShell, allowing you to execute commands and perform actions on the local machine.
-
+This script is designed to exfiltrate WiFi Passwords to a Discord webhook. 
 ## Usage
 
 1. Connect the BadUSB device to the target machine.

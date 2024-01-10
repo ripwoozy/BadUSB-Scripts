@@ -1,11 +1,12 @@
-# Exfill PC Infos to Discord Webhook
+# Recon and Exfill Local Network Infos to Discord Webhook
 
-This script is designed to exfiltrate PC information to a Discord webhook. 
+This script is designed to Recon and to exfill useful information from the current machine network a Discord webhook. 
+
 ## Usage
 
 1. Connect the BadUSB device to the target machine.
 2. Run the script on the target machine.
-3. PC information will be sent to the specified Discord webhook.
+3. All Network Information will be sent to the specified Discord webhook.
 
 ## Requirements
 
