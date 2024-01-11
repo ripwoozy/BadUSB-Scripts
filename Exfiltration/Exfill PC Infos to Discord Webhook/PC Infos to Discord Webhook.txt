@@ -38,6 +38,7 @@ DELAY 200
 
 REM Create content string with PC information
 STRINGLN $content = @"
+STRINGLN **PC Information**
 STRINGLN **Date:** $date
 STRINGLN **Manufacturer** = $manufacturer
 STRINGLN **Model** = $model
@@ -46,6 +47,7 @@ STRINGLN **CPU** = $cpuInfo
 STRINGLN **OS** = $osInfoCaption
 STRINGLN **OSVersion** = $osInfoVersion
 STRINGLN "@
+ENTER
 DELAY 200
 
 REM Convert content to JSON payload
